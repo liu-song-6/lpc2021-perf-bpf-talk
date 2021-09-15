@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>BTF: Always present</title>
+
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+		<link rel="stylesheet" href="dist/theme/black.css" id="theme">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h2>Adding features to perf using BPF</h2>
+					<br>
+					<br>
+					<table>
+						<tbody>
+							<tr>
+								<th>
+									<i>Arnaldo Carvalho de Melo</i>
+									<br>
+									<i>acme@redhat.com</i>
+								</th>
+							</tr>
+							<tr>
+								<th>
+								<i>Song Liu</i>
+								<br>
+								<i>song@kernel.org</i>
+								</th>
+							</tr>
+							<tr>
+								<th>
+								<i>Namhyung Kim</i>
+								<br>
+								<i>namhyung@kernel.org</i>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+				<section>
+					<h2>What is this about?</h2>
+					<br>
+					<br>
+					<ul>
+						<li>perf tools: familiar control plane</li>
+						<li>BPF: flexible, powerful dataplane</li>
+						<li>BTF for pretty printing and more</li>
+					</ul>
+				</section>
+				<section>
+					<h2>perf for BPF</h2>
+					<br>
+					<br>
+					<ul>
+						<li>BPF profiling</li>
+						<li>BPF sampling</li>
+						<li>BPF annotation</li>
+						<li>BPF event counting</li>
+					</ul>
+				</section>
+				<section>
+					<h2>BPF for perf</h2>
+					<br>
+					<br>
+					<ul>
+						<li>BPF event counting</li>
+						<li>perf using BPF to count events in BPF code</li>
+						<li>bpftool prog profile</li>
+						<li>perf stat -b/--bpf-prog PROG_ID</li>
+						<li>perf stat --bpf-counters</li>
+						<li>perf stat --bpf-counters --for-each-cgroup</li>
+					</ul>
+				</section>
+				<section>
+					<h2>BPF for perf</h2>
+					<br>
+					<br>
+					<ul>
+						<li>Reuse BPF infrastructure in perf</li>
+						<li>build-ids</li>
+						<li>bpf_get_stack(BPF_F_USER_BUILD_ID)</li>
+						<li>Use in PERF_RECORD_MMAP2</li>
+					</ul>
+				</section>
+				<section>
+					<h2>bpfprog profile</h2>
+					<br>
+					<br>
+					<ul>
+						<li>Limited to some events</li>
+						<li>FILL IN</li>
+						<li>ADD SLIDE SHOWING IT IN ACTION</li>
+						<li>TO SHOW ITS LIMITATIONS WRT PERF STAT</li>
+					</ul>
+				</section>
+				<section>
+					<h2>perf stat for BPF</h2>
+					<br>
+					<br>
+					<ul>
+						<li>Just another target</li>
+						<li>pid, tid, cpu, cgroup, BPF_PROG</li>
+						<li>Familiar workflow</li>
+						<li>Lots of events</li>
+						<li>Metrics</li>
+						<li>First class perf stat citizen</li>
+					</ul>
+				</section>
+				<section>
+					<h2>But how? BPF skels</h2>
+					<br>
+					<br>
+					<ul>
+						<li>Canonical example: tools/bpf/runqslower</li>
+						<li>Lots of boilerplate taken care of</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Using it</h2>
+					<br>
+					<br>
+					<ul>
+						<li>FILL IN</li>
+						<li>REUSE EXAMPLE IN PREVIOUS TALK</li>
+						<li><a href=http://vger.kernel.org/~acme/bpf/devconf.cz-2020-BPF-The-Status-of-BTF-producers-consumers/#/36>runqslower dissection</a></li>
+						<li>Talk about the new light BPF skels</li>
+					</ul>
+				</section>
+				<section>
+					<h2>perf stat for BPF: using it</h2>
+					<br>
+					<br>
+					<ul>
+						<li>Lots of events</li>
+						<li>FILL IN</li>
+						<li>ADD SLIDE SHOWING IT IN ACTION</li>
+						<li>TO SHOW ITS ADVANTAGES OVER PERF STAT</li>
+					</ul>
+				</section>
+				<section>
+					<h2>perf stat BPF counters</h2>
+					<br>
+					<br>
+					<ul>
+						<li>FILL IN</li>
+						<li>ADD SLIDE SHOWING IT IN ACTION</li>
+						<li>TO SHOW ITS ADVANTAGES OVER PERF STAT</li>
+					</ul>
+				</section>
+				<section>
+					<h2>perf stat BPF counters</h2>
+					<br>
+					<br>
+					<ul>
+						<li>FILL IN</li>
+						<li>ADD SLIDE SHOWING IT IN ACTION</li>
+						<li>TO SHOW ITS ADVANTAGES OVER PERF STAT</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Future</h2>
+					<br>
+					<ul>
+						<li>triggers: start/stop perf events from bpf program</li>
+						<li>Use bpf_get_branch_snapshot() in perf tools</li>
+						<li>Helping developers figure out ENOSOMETHING from perf_event_open()</li>
+						<li>As default case for evsel__open_strerror()</li>
+						<li>Show a backtrace</li>
+						<li>in addition to asking user to look at dmesg output</li>
+						<li>Presentations at: http://vger.kernel.org/~acme/bpf/</li>
+					</ul>
+				</section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+			});
+		</script>
+	</body>
+</html>
