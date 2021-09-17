@@ -157,14 +157,98 @@
 					</ul>
 				</section>
 				<section>
-					<h2>perf stat BPF counters</h2>
+					<h2>perf stat cgroup Usecase</h2>
 					<br>
 					<br>
 					<ul>
-						<li>FILL IN</li>
-						<li>ADD SLIDE SHOWING IT IN ACTION</li>
-						<li>TO SHOW ITS ADVANTAGES OVER PERF STAT</li>
+						<li>Google runs hundreds of jobs on a single machine</li>
+						<li>any workload runs inside a cgroup</li>
+						<li>wants to monitor each job (counting mode)</li>
+						<li>reference: <a href="https://www.linuxplumbersconf.org/event/4/contributions/291/">LPC 2019 talk</a></li>
 					</ul>
+				</section>
+				<section>
+					<h2>Scalability issues</h2>
+					<br>
+					<ul>
+						<li>each cgroup has its own perf_event</li>
+						<ul>
+							<li>needs (#events x #cpus x #cgroups) fds</li>
+							<li>increases cgroup context switch overhead</li>
+							<ul>
+								<li>by reprogramming PMU counters</li>
+							</ul>
+						</ul>
+						<li>workaround</li>
+						<ul>
+							<li>limits number of cgroups to profile at once</li>
+							<li>creates blind spots and inconsistent data</li>
+						</ul>
+					</ul>
+				</section>
+				<section>
+					<h2>Cgroup perf events</h2>
+					<br>
+					<ul>
+						<li>cpu perf events with associated cgroup</li>
+						<li>measuring same events across cgroups</li>
+						<ul>
+							<li>this is the most common use case at Google</li>
+							<li>ensured by --for-each-cgroup</li>
+						</ul>
+						<li>no need to have separate events for cgroups</li>
+						<ul>
+							<li>but still need separate counts per cgroup</li>
+						</ul>
+					</ul>
+				</section>
+				<section>
+					<h2>In-kernel aggregation</h2>
+					<br>
+					<ul>
+						<li>proposed ioctl-based approach</li>
+						<ul>
+							<li>using a cpu event (for each cpu)</li>
+							<li>collects event counts for current cgroup</li>
+							<ul>
+								<li>at context switch</li>
+							</ul>
+							<li>no PMU reprogramming during context switch</li>
+						</ul>
+						<li>rejected due to interface concerns</li>
+						<ul>
+							<li><a href="https://lore.kernel.org/lkml/20210413155337.644993-1-namhyung@kernel.org/">link to the discussion</a></li>
+						</ul>
+					</ul>
+				</section>
+				<section>
+					<h2>BPF based approach</h2>
+					<br>
+					<ul>
+						<li>thanks to bperf infra by Song Liu</li>
+						<li>same design, but doing it in BPF</li>
+						<ul>
+							<li>attaches to cgroup-switches* event</li>
+							<li>collects event counts for current cgroup</li>
+							<li>saves the results in per-cpu array</li>
+						</ul>
+					</ul>
+					<br>
+					<br>
+					* a software event added to v5.13
+				</section>
+				<section>
+					<h2>Results</h2>
+					<br>
+					<ul>
+						<li>estimated context switch time</li>
+						<li>tasks communicate through pipes</li>
+						<li>tasks are in different cgroups</li>
+					</ul>
+					<br>
+					<br>
+                                        <img src="img/bpf-cgrp-counter-intel.png" width="360">
+                                        <img src="img/bpf-cgrp-counter-amd.png" width="360">
 				</section>
 				<section>
 					<h2>Future</h2>
