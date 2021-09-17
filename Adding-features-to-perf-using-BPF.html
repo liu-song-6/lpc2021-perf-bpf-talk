@@ -157,6 +157,24 @@
 					</ul>
 				</section>
 				<section>
+					<h3> bperf: perf stat with BPF backend </h3>
+					<ul>
+						<li> Mutliple tools monitor same common metrics (cycles, instrcutions) at different granularities: system wide, per cgroup, per process, etc. </li>
+						<li> Limited hardware counters</li>
+						<li> Time multiplexing when more active events than hardware counters: low accuracy or high overhead </li>
+						<li> Sharing counters in kernel is hard. After <a href=https://lkml.org/lkml/2020/5/1/1418 >v13 </a>, I started hating it myself. </li>
+					</ul>
+				</section>
+				<section>
+					<h3> bperf: perf stat with BPF backend </h3>
+					<ul>
+						<li> Solution: sharing hardware counters with BPF </li>
+						<li> Create per cpu perf events on each cpu </li>
+						<li> BPF program triggers on the context switch, reads perf events, and aggregates reading in BPF maps.</li>
+						<li> User space reads output from BPF maps. </li>
+					</ul>
+				</section>
+				<section>
 					<h2>perf stat cgroup Usecase</h2>
 					<br>
 					<br>
