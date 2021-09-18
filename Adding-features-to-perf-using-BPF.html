@@ -97,10 +97,34 @@
 					<br>
 					<ul>
 						<li>Limited to some events</li>
-						<li>FILL IN</li>
-						<li>ADD SLIDE SHOWING IT IN ACTION</li>
-						<li>TO SHOW ITS LIMITATIONS WRT PERF STAT</li>
+						<li>cycles, instructions, l1d_loads, llc_misses</li>
+						<li>itlb_misses and dtlb_misses</li>
+						<li>Different workflow from familiar 'perf stat'</li>
+						<li>New tool, few features</li>
 					</ul>
+				</section>
+				<section>
+					<h4>bpftool prog profile help</h4>
+					<br>
+					<pre>
+$ bpftool prog help
+       bpftool prog profile PROG [duration DURATION] METRICs
+
+       PROG := { id PROG_ID | pinned FILE | tag PROG_TAG | name PROG_NAME }
+       METRIC := { cycles | instructions | l1d_loads | llc_misses | itlb_misses | dtlb_misses }
+$
+					</pre>
+				</section>
+				<section>
+					<h4>bpftool prog profile</h4>
+					<br>
+					<pre>
+$ bpftool prog profile id 324 duration 3 cycles itlb_misses
+
+       1885029 run_cnt
+    5134686073 cycles
+        306893 itlb_misses
+					</pre>
 				</section>
 				<section>
 					<h2>perf stat for BPF</h2>
