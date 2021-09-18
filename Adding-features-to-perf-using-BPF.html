@@ -146,29 +146,27 @@ $ bpftool prog profile id 324 duration 3 cycles itlb_misses
 					<ul>
 						<li>Canonical example: tools/bpf/runqslower</li>
 						<li>Lots of boilerplate taken care of</li>
+						<li>BPF built and "linked" with perf</li>
+						<li>Details on <a href=http://vger.kernel.org/~acme/bpf/devconf.cz-2020-BPF-The-Status-of-BTF-producers-consumers/#/40>Devconf.cz 2020 BPF talk</a></li>
 					</ul>
 				</section>
 				<section>
-					<h2>Using it</h2>
+					<h4>Using it</h4>
 					<br>
-					<br>
-					<ul>
-						<li>FILL IN</li>
-						<li>REUSE EXAMPLE IN PREVIOUS TALK</li>
-						<li><a href=http://vger.kernel.org/~acme/bpf/devconf.cz-2020-BPF-The-Status-of-BTF-producers-consumers/#/36>runqslower dissection</a></li>
-						<li>Talk about the new light BPF skels</li>
-					</ul>
-				</section>
-				<section>
-					<h2>perf stat for BPF: using it</h2>
-					<br>
-					<br>
-					<ul>
-						<li>Lots of events</li>
-						<li>FILL IN</li>
-						<li>ADD SLIDE SHOWING IT IN ACTION</li>
-						<li>TO SHOW ITS ADVANTAGES OVER PERF STAT</li>
-					</ul>
+					<pre>
+# perf stat -e ref-cycles,cycles --bpf-prog 254 --interval-print 1000
+    1.487903822            115,200      ref-cycles
+    1.487903822             86,012      cycles
+    2.489147029             80,560      ref-cycles
+    2.489147029             73,784      cycles
+    3.490341825             60,720      ref-cycles
+    3.490341825             37,797      cycles
+#
+# # Equivalent to:
+#
+# perf stat -e ref-cycles,cycles -b 254 -I 1000
+
+					</pre>
 				</section>
 				<section>
 					<h2>perf stat BPF counters</h2>
