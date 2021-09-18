@@ -157,18 +157,21 @@
 					</ul>
 				</section>
 				<section>
-					<h3> bperf: perf stat with BPF backend </h3>
-					<ul>
-						<li> Mutliple tools monitor same common metrics (cycles, instrcutions) at different granularities: system wide, per cgroup, per process, etc. </li>
-						<li> Limited hardware counters</li>
-						<li> Time multiplexing when more active events than hardware counters: low accuracy or high overhead </li>
-						<li> Sharing counters in kernel is hard. After <a href=https://lkml.org/lkml/2020/5/1/1418 >v13 </a>, I started hating it myself. </li>
-					</ul>
+					<h2> bperf: perf stat with BPF backend </h2>
 				</section>
 				<section>
-					<h3> bperf: perf stat with BPF backend </h3>
+					<h3> bperf: the problem </h3>
 					<ul>
-						<li> Solution: sharing hardware counters with BPF </li>
+						<li> Mutliple tools monitor same common metrics (cycles, instrcutions) at different granularities: system wide, per process, per request, etc. </li>
+						<li> Limited hardware counters</li>
+						<li> Time multiplexing when there are more active events than hardware counters: low accuracy or high overhead </li>
+						<li> Sharing counters in kernel is hard. After <a href=https://lkml.org/lkml/2020/5/1/1418> v13 of this patchset </a>, I started hating it myself. </li>
+					</ul>
+				</section>				
+				<section>
+					<h3> bperf: the solution </h3>
+					<ul>
+						<li> Use BPF to manage hardware hardware counters</li>
 						<li> Create per cpu perf events on each cpu </li>
 						<li> BPF program triggers on the context switch, reads perf events, and aggregates reading in BPF maps.</li>
 						<li> User space reads output from BPF maps. </li>
@@ -177,6 +180,28 @@
 				<section>
 					<h3> bperf: architecture </h3>
                                         <img src="img/bperf-arch.png">
+				</section>
+				<section>
+					<h3> bperf: share across processes </h3>
+					<ul>
+						<li> BPF hashmap pinned in <code>/sys/fs/bpf/perf_attr_map</code></li>
+						<li> Each user holds a fd to the bpf_link </li>
+						<li> The perf_events, BPF programs, maps are freed when the last user exits (or closes all fds)</li>
+					</ul>
+					<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers>
+						struct perf_event_attr_map_entry {
+							__u32 link_id;   /* bpf_link of the leader prog */
+							__u32 diff_map_id;
+						};
+					</code></pre>
+				</section>
+				<section>
+					<h2> bperf: share across processes </h2>
+					<ul>
+						<li> Monitor daemons may share hardware counters with perf-stat</li>
+						<li> Kernel supports up to 38 (BPF_MAX_TRAMP_PROGS) follower progs per leader prog </li>
+						<li> Share one set of hardware counters (one per cpu) among up to 38 different processes </li>
+					</ul>
 				</section>
 				<section>
 					<h2>perf stat cgroup Usecase</h2>
@@ -188,7 +213,7 @@
 						<li>wants to monitor each job (counting mode)</li>
 						<li>reference: <a href="https://www.linuxplumbersconf.org/event/4/contributions/291/">LPC 2019 talk</a></li>
 					</ul>
-				</section>
+				</section>				
 				<section>
 					<h2>Scalability issues</h2>
 					<br>
