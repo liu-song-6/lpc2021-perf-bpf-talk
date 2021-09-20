@@ -190,6 +190,24 @@ $ bpftool prog profile id 324 duration 3 cycles itlb_misses
 					</ul>
 				</section>
 				<section>
+					<h3> bperf: using it </h3>
+					<ul>
+						<li> :b for one event, --bpf-counters for all events in this command</li>
+						<pre>
+# perf stat -e cycles:b,cs               # use bpf for cycles, but not cs
+# perf stat -e cycles,cs --bpf-counters  # use bpf for both cycles and cs
+						</pre>
+						<li> No time multiplexing!</li>
+						<pre>
+# for x in {1..20} ; do perf stat -a -e cycles:b sleep 1000 & done
+# perf stat -a -e cycles,instructions --bpf-counters sleep 0.1
+     Performance counter stats for 'system wide':
+         119,410,122   cycles
+         152,105,479   instructions    #    1.27  insn per cycle
+						</pre>
+					</ul>
+				</section>
+				<section>
 					<h3> bperf: architecture </h3>
                                         <img src="img/bperf-arch.png">
 				</section>
@@ -197,8 +215,6 @@ $ bpftool prog profile id 324 duration 3 cycles itlb_misses
 					<h3> bperf: share across processes </h3>
 					<ul>
 						<li> BPF hashmap pinned in <code>/sys/fs/bpf/perf_attr_map</code></li>
-						<li> Each user holds a fd to the bpf_link </li>
-						<li> The perf_events, BPF programs, maps are freed when the last user exits (or closes all fds)</li>
 					</ul>
 					<pre data-id="code-animation"><code class="hljs" data-trim data-line-numbers>
 						struct perf_event_attr_map_entry {
@@ -206,6 +222,10 @@ $ bpftool prog profile id 324 duration 3 cycles itlb_misses
 							__u32 diff_map_id;
 						};
 					</code></pre>
+					<ul>
+						<li> Each user holds a fd to the bpf_link </li>
+						<li> The perf_events, BPF programs, maps are freed when the last user exits (or closes all fds)</li>
+					</ul>
 				</section>
 				<section>
 					<h3> bperf: share across processes </h3>
